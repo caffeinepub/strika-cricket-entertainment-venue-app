@@ -1,0 +1,161 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --radius: 0.75rem;
+        
+        /* Green and Gold Cricket Theme - Light Mode */
+        --background: 0.98 0 0;
+        --foreground: 0.20 0 0;
+        
+        --card: 1 0 0;
+        --card-foreground: 0.20 0 0;
+        
+        --popover: 1 0 0;
+        --popover-foreground: 0.20 0 0;
+        
+        /* Primary: Rich Cricket Green */
+        --primary: 0.45 0.15 145;
+        --primary-foreground: 0.98 0 0;
+        
+        /* Secondary: Warm Gold */
+        --secondary: 0.75 0.14 85;
+        --secondary-foreground: 0.20 0 0;
+        
+        --muted: 0.94 0.01 145;
+        --muted-foreground: 0.50 0.02 145;
+        
+        /* Accent: Bright Gold */
+        --accent: 0.80 0.16 75;
+        --accent-foreground: 0.20 0 0;
+        
+        --destructive: 0.55 0.22 25;
+        --destructive-foreground: 0.98 0 0;
+        
+        --border: 0.88 0.02 145;
+        --input: 0.88 0.02 145;
+        --ring: 0.45 0.15 145;
+        
+        --chart-1: 0.45 0.15 145;
+        --chart-2: 0.75 0.14 85;
+        --chart-3: 0.60 0.12 165;
+        --chart-4: 0.70 0.13 95;
+        --chart-5: 0.50 0.10 125;
+        
+        --sidebar: 0.98 0 0;
+        --sidebar-foreground: 0.20 0 0;
+        --sidebar-primary: 0.45 0.15 145;
+        --sidebar-primary-foreground: 0.98 0 0;
+        --sidebar-accent: 0.94 0.01 145;
+        --sidebar-accent-foreground: 0.20 0 0;
+        --sidebar-border: 0.88 0.02 145;
+        --sidebar-ring: 0.45 0.15 145;
+        
+        /* Success state */
+        --success: 0.55 0.15 145;
+        --success-foreground: 0.98 0 0;
+        
+        /* Warning state */
+        --warning: 0.70 0.16 75;
+        --warning-foreground: 0.20 0 0;
+    }
+
+    .dark {
+        /* Green and Gold Cricket Theme - Dark Mode */
+        --background: 0.15 0.02 145;
+        --foreground: 0.95 0.01 145;
+        
+        --card: 0.20 0.03 145;
+        --card-foreground: 0.95 0.01 145;
+        
+        --popover: 0.18 0.03 145;
+        --popover-foreground: 0.95 0.01 145;
+        
+        /* Primary: Bright Cricket Green */
+        --primary: 0.60 0.18 145;
+        --primary-foreground: 0.15 0.02 145;
+        
+        /* Secondary: Rich Gold */
+        --secondary: 0.70 0.16 80;
+        --secondary-foreground: 0.15 0.02 145;
+        
+        --muted: 0.25 0.03 145;
+        --muted-foreground: 0.65 0.03 145;
+        
+        /* Accent: Vibrant Gold */
+        --accent: 0.75 0.18 75;
+        --accent-foreground: 0.15 0.02 145;
+        
+        --destructive: 0.60 0.24 25;
+        --destructive-foreground: 0.95 0.01 145;
+        
+        --border: 0.30 0.04 145;
+        --input: 0.30 0.04 145;
+        --ring: 0.60 0.18 145;
+        
+        --chart-1: 0.60 0.18 145;
+        --chart-2: 0.70 0.16 80;
+        --chart-3: 0.55 0.14 165;
+        --chart-4: 0.65 0.15 95;
+        --chart-5: 0.50 0.12 125;
+        
+        --sidebar: 0.18 0.03 145;
+        --sidebar-foreground: 0.95 0.01 145;
+        --sidebar-primary: 0.60 0.18 145;
+        --sidebar-primary-foreground: 0.15 0.02 145;
+        --sidebar-accent: 0.25 0.03 145;
+        --sidebar-accent-foreground: 0.95 0.01 145;
+        --sidebar-border: 0.30 0.04 145;
+        --sidebar-ring: 0.60 0.18 145;
+        
+        --success: 0.60 0.18 145;
+        --success-foreground: 0.15 0.02 145;
+        
+        --warning: 0.70 0.16 75;
+        --warning-foreground: 0.15 0.02 145;
+    }
+
+    * {
+        @apply border-border;
+    }
+    
+    body {
+        @apply bg-background text-foreground;
+        font-feature-settings: "rlig" 1, "calt" 1;
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        @apply bg-muted;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        @apply bg-primary/50 rounded-lg;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        @apply bg-primary/70;
+    }
+}
+
+@layer components {
+    .gradient-primary {
+        background: linear-gradient(135deg, oklch(var(--primary)) 0%, oklch(var(--accent)) 100%);
+    }
+    
+    .gradient-gold {
+        background: linear-gradient(135deg, oklch(var(--secondary)) 0%, oklch(var(--accent)) 100%);
+    }
+    
+    .text-gradient {
+        @apply bg-clip-text text-transparent;
+        background-image: linear-gradient(135deg, oklch(var(--primary)) 0%, oklch(var(--accent)) 100%);
+    }
+}
