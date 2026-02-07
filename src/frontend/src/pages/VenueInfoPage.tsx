@@ -1,10 +1,11 @@
 import { MapPin, Clock, Phone, Mail, HelpCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { useGetVenueInfo } from '../hooks/useQueries';
+import { useGetVenueInfo, useGetBusinessContactInfo } from '../hooks/useQueries';
 
 export default function VenueInfoPage() {
   const { data: venueInfo } = useGetVenueInfo();
+  const { data: contactInfo } = useGetBusinessContactInfo();
 
   const defaultFaqs = [
     {
@@ -67,7 +68,7 @@ export default function VenueInfoPage() {
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">
-                {venueInfo?.location || '123 Cricket Lane, Sports District, City, State 12345'}
+                {contactInfo?.address || venueInfo?.location || '123 Cricket Lane, Sports District, City, State 12345'}
               </p>
             </CardContent>
           </Card>
@@ -94,7 +95,9 @@ export default function VenueInfoPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">(555) 123-4567</p>
+              <p className="text-muted-foreground">
+                {contactInfo?.phone || '(555) 123-4567'}
+              </p>
             </CardContent>
           </Card>
 
@@ -106,10 +109,24 @@ export default function VenueInfoPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">info@strika.com</p>
+              <p className="text-muted-foreground">
+                {contactInfo?.email || 'info@strika.com'}
+              </p>
             </CardContent>
           </Card>
         </div>
+
+        {/* Description */}
+        {contactInfo?.description && (
+          <Card>
+            <CardHeader>
+              <CardTitle>About Us</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">{contactInfo.description}</p>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Facilities */}
         <Card>

@@ -1,0 +1,104 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 5,
+  "summary": "Website/app with booking and shop features; extend existing Admin tab to manage booking availability, session extensions, and business/contact settings.",
+  "architectural_notes": [
+    "Use the existing Admin tab (authenticated admin area) as the management UI for booking slots and business/contact settings.",
+    "Booking availability is managed by manually toggling individual time slots; only 'live' slots are bookable by customers.",
+    "15-minute add-on extensions are staff-only actions performed during an active session and should be allowed only when the subsequent slot is unbooked.",
+    "Time slot creation should auto-generate 30-minute slots and persist them so they appear in both Admin and public Booking views."
+  ],
+  "known_issues": [
+    "BUG: 'Create time slot' shows success message but no time slots appear in Admin Manage Time Slots or on the main Booking page (slots seemingly not persisted and/or not retrieved for display)."
+  ],
+  "isFixRequest": true,
+  "existing_features": [
+    {
+      "id": "feature-replace-the-placeholder-booking-availability-logic-with-a-persisted-admin-managed-time-slot-availability-system-that-supports-manually-toggling-individual-30-minute-slots-as-available-unavailable-and-publishing-those-slots-as-live-so-customers-can-book-them",
+      "title": "Replace the placeholder booking availability logic with a persisted, admin-managed time-slot availability system that supports manually toggling individual 30-minute slots as available/unavailable and publishing those slots as \"live\" so customers can book them.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-staff-only-15-minute-extensions-for-an-ongoing-30-minute-session-allowed-only-if-the-immediately-following-15-minute-segment-is-not-booked-i-e-extending-does-not-overlap-another-booking",
+      "title": "Implement staff-only 15-minute extensions for an ongoing 30-minute session, allowed only if the immediately following 15-minute segment is not booked (i.e., extending does not overlap another booking).",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-editable-business-contact-information-fields-simple-text-only-that-can-be-updated-from-the-existing-admin-area-and-make-the-updated-information-available-on-public-pages-that-display-venue-business-details",
+      "title": "Add editable business/contact information fields (simple text only) that can be updated from the existing Admin area, and make the updated information available on public pages that display venue/business details.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-booking-ui-copy-and-duration-presentation-to-match-the-new-30-minute-slot-model-and-ensure-booking-confirmation-and-slot-cards-reflect-the-correct-duration",
+      "title": "Update the booking UI copy and duration presentation to match the new 30-minute slot model and ensure booking confirmation and slot cards reflect the correct duration.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-time-slot-listing-logic-so-that-newly-created-time-slots-appear-in-the-admin-manage-time-slots-list-immediately-after-creation-even-when-they-are-not-yet-published-live",
+      "title": "Fix the time slot listing logic so that newly created time slots appear in the Admin \"Manage Time Slots\" list immediately after creation (even when they are not yet published/live).",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-an-admin-only-backend-query-to-retrieve-all-time-slots-including-hidden-unpublished-and-disabled-slots-and-update-the-admin-slots-ui-to-use-this-query-instead-of-the-public-available-time-slots-query",
+      "title": "Add an admin-only backend query to retrieve all time slots (including hidden/unpublished and disabled slots) and update the Admin Slots UI to use this query instead of the public \"available time slots\" query.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-booking-page-continues-to-show-only-bookable-slots-live-enabled-in-the-future-and-that-admin-slot-creation-only-causes-bookable-slots-to-appear-on-booking-once-an-admin-publishes-them-sets-live",
+      "title": "Ensure the Booking page continues to show only bookable slots (live + enabled + in the future) and that admin slot creation only causes bookable slots to appear on Booking once an admin publishes them (sets Live).",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-admin-success-messaging-after-slot-creation-to-avoid-implying-slots-are-immediately-visible-to-customers-when-they-are-created-as-hidden-unpublished-by-default",
+      "title": "Update the Admin success messaging after slot creation to avoid implying slots are immediately visible to customers when they are created as hidden/unpublished by default.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Extend existing Admin tab to manually toggle individual booking time slots (availability) and publish slots live for customers to book",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Staff-only ability to add a 15-minute extension to an ongoing 30-minute session (only if the next slot is unbooked)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Admin tab: editable business/contact info via simple text fields (e.g., phone, email, address, description) and other business settings as requested",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "projectName": "Extend Admin panel to manage booking availability, staff 15-minute extensions, and editable contact info",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

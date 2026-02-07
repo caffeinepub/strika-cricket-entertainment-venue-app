@@ -1,0 +1,81 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Fix admin time slot visibility and React Query synchronization",
+  "requirements": [
+    {
+      "id": "REQ-5",
+      "summary": "Show newly created (hidden/unpublished) time slots immediately in Admin \"Manage Time Slots\" without refresh and reflect Enabled/Live states.",
+      "acceptanceCriteria": [
+        "After clicking \"Create Slots\" in the Admin > Slots tab, the created slots appear in the Admin \"Manage Time Slots\" section without requiring a page refresh.",
+        "Admin \"Manage Time Slots\" displays slots regardless of their live/published status (so newly created hidden slots are visible to admins).",
+        "The Admin list clearly reflects each slot’s current Enabled/Disabled and Live/Hidden state using the existing toggle buttons."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/AvailabilityManagementPanel.tsx",
+          "operation": "modify",
+          "description": "Update Admin slot listing to use an admin-all-slots query (not the public available-only query), and ensure the list refetches after slot creation and after toggles so new slots appear immediately without a page refresh. Keep existing toggle buttons to reflect Enabled/Disabled and Live/Hidden states. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "summary": "Use an admin-only \"all time slots\" query in the Admin Slots UI with a dedicated React Query hook and correct cache invalidation.",
+      "acceptanceCriteria": [
+        "Backend exposes an admin-gated method that returns all stored time slots (no filtering by isLive/isEnabled/time).",
+        "If a non-admin calls the new method, it is rejected (traps) as unauthorized, consistent with other admin-gated methods.",
+        "Frontend adds a React Query hook for the new method and AvailabilityManagementPanel uses it for the Admin list.",
+        "Creating/toggling a slot invalidates/refetches the admin list query so the UI stays in sync."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add a React Query hook that calls the existing backend actor method for retrieving all time slots (e.g., getAllTimeSlots) using a stable queryKey (e.g., ['allTimeSlots']). Update time-slot mutations to invalidate/refetch this queryKey so the Admin list stays in sync after create/toggle actions. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/AvailabilityManagementPanel.tsx",
+          "operation": "modify",
+          "description": "Switch the Admin list data source from useGetAvailableTimeSlots() to the new useGetAllTimeSlots() hook, and ensure create/toggle actions invalidate/refetch both the admin list query and the public availability query where appropriate. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "summary": "Keep Booking page limited to bookable slots only and ensure React Query refreshes when slots become Live.",
+      "acceptanceCriteria": [
+        "Booking page continues to use the public availability query and does not show hidden/unpublished slots.",
+        "A newly created slot does not appear on Booking until the admin toggles it to Live.",
+        "Once a slot is toggled Live (and is Enabled and in the future), it appears on Booking without requiring a hard refresh (React Query invalidation works)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/BookingPage.tsx",
+          "operation": "modify",
+          "description": "Confirm the Booking page continues to use the public availability query only (useGetAvailableTimeSlots) and relies on React Query invalidation to refresh when slots are toggled Live/Enabled. If needed, adjust query behavior (e.g., ensure the query is enabled correctly with actor availability) without exposing hidden/unpublished slots. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Ensure slot live/availability toggle mutations continue to invalidate the public ['availableTimeSlots'] query so Booking updates without a hard refresh once a slot becomes bookable; keep admin list invalidation separate via ['allTimeSlots']. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "summary": "Clarify Admin success messaging after slot creation to avoid implying customer visibility before publishing.",
+      "acceptanceCriteria": [
+        "After creating slots, the toast/message clarifies that slots were created and can be published (set Live) to appear on the Booking page.",
+        "No change to the slot creation behavior is required (slots may remain Hidden by default)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/AvailabilityManagementPanel.tsx",
+          "operation": "modify",
+          "description": "Update the post-creation toast/message text to clarify slots were created and must be set to Live to appear on the Booking page, while keeping creation behavior unchanged (hidden by default). Verify the component's usage instructions before implementing."
+        }
+      ]
+    }
+  ]
+}

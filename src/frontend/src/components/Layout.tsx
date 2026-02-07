@@ -94,71 +94,105 @@ export default function Layout() {
               onClick={() => navigate({ to: '/' })}
               className="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity flex-shrink-0"
             >
-              <img 
-                src="/assets/generated/strika-logo-transparent.dim_200x200.png" 
-                alt="Strika Logo" 
-                className="h-8 w-8 sm:h-10 sm:w-10" 
+              <img
+                src="/assets/generated/strika-logo-transparent.dim_200x200.png"
+                alt="Strika Logo"
+                className="w-8 h-8 sm:w-10 sm:h-10"
               />
-              <span className="text-base sm:text-xl font-bold text-gradient hidden md:inline">
-                Strika
-              </span>
+              <span className="text-xl sm:text-2xl font-bold gradient-text">Strika</span>
             </button>
 
-            {/* Desktop Navigation - Show on larger screens with proper spacing */}
-            <nav className="hidden xl:flex items-center gap-1 flex-1 justify-center max-w-4xl mx-4">
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center gap-1 flex-1 justify-center">
               {navItems.map((item) => (
                 <NavLink key={item.path} {...item} />
               ))}
-              {isAuthenticated && (
-                <NavLink path="/profile" label="Profile" icon={User} />
-              )}
-              {showAdminButton && (
-                <NavLink path="/admin" label="Admin" icon={Shield} />
-              )}
             </nav>
 
-            {/* Auth Button, Notification Center & Mobile Menu */}
-            <div className="flex items-center gap-2 flex-shrink-0">
+            {/* Right Side Actions */}
+            <div className="flex items-center gap-2">
+              {/* Notification Center - Only show when authenticated */}
               {isAuthenticated && <NotificationCenter />}
+
+              {/* Admin Button - Only show when authenticated and admin */}
+              {showAdminButton && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate({ to: '/admin' })}
+                  className="hidden sm:flex items-center gap-2"
+                >
+                  <Shield className="w-4 h-4" />
+                  <span className="hidden md:inline">Admin</span>
+                </Button>
+              )}
+
+              {/* Profile Button - Only show when authenticated */}
+              {isAuthenticated && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate({ to: '/profile' })}
+                  className="hidden sm:flex items-center gap-2"
+                >
+                  <User className="w-4 h-4" />
+                  <span className="hidden md:inline">Profile</span>
+                </Button>
+              )}
+
+              {/* Auth Button */}
               <Button
                 onClick={handleAuth}
                 disabled={disabled}
-                variant={isAuthenticated ? 'outline' : 'default'}
                 size="sm"
+                variant={isAuthenticated ? 'outline' : 'default'}
                 className="hidden sm:flex"
               >
                 {buttonText}
               </Button>
 
-              {/* Mobile Menu - Show on tablets and smaller */}
+              {/* Mobile Menu */}
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="xl:hidden flex-shrink-0">
-                    <Menu className="h-5 w-5 sm:h-6 sm:w-6" />
+                  <Button variant="ghost" size="sm" className="lg:hidden">
+                    <Menu className="w-5 h-5" />
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-[280px] sm:w-[320px]">
-                  <div className="flex flex-col gap-4 mt-8">
-                    <Button
-                      onClick={handleAuth}
-                      disabled={disabled}
-                      variant={isAuthenticated ? 'outline' : 'default'}
-                      className="w-full"
-                    >
-                      {buttonText}
-                    </Button>
-                    <nav className="flex flex-col gap-2">
-                      {navItems.map((item) => (
-                        <NavLink key={item.path} {...item} onClick={() => setMobileMenuOpen(false)} />
-                      ))}
-                      {isAuthenticated && (
-                        <NavLink path="/profile" label="Profile" icon={User} onClick={() => setMobileMenuOpen(false)} />
-                      )}
-                      {showAdminButton && (
-                        <NavLink path="/admin" label="Admin" icon={Shield} onClick={() => setMobileMenuOpen(false)} />
-                      )}
-                    </nav>
-                  </div>
+                  <nav className="flex flex-col gap-2 mt-8">
+                    {navItems.map((item) => (
+                      <NavLink key={item.path} {...item} onClick={() => setMobileMenuOpen(false)} />
+                    ))}
+                    {isAuthenticated && (
+                      <NavLink
+                        path="/profile"
+                        label="Profile"
+                        icon={User}
+                        onClick={() => setMobileMenuOpen(false)}
+                      />
+                    )}
+                    {showAdminButton && (
+                      <NavLink
+                        path="/admin"
+                        label="Admin Panel"
+                        icon={Shield}
+                        onClick={() => setMobileMenuOpen(false)}
+                      />
+                    )}
+                    <div className="mt-4 pt-4 border-t">
+                      <Button
+                        onClick={() => {
+                          handleAuth();
+                          setMobileMenuOpen(false);
+                        }}
+                        disabled={disabled}
+                        variant={isAuthenticated ? 'outline' : 'default'}
+                        className="w-full"
+                      >
+                        {buttonText}
+                      </Button>
+                    </div>
+                  </nav>
                 </SheetContent>
               </Sheet>
             </div>
@@ -174,28 +208,53 @@ export default function Layout() {
       {/* Footer */}
       <footer className="border-t bg-muted/30 mt-auto">
         <div className="container mx-auto px-4 py-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span>© 2025. Built with</span>
-              <span className="text-destructive">❤</span>
-              <span>using</span>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <img
+                  src="/assets/generated/strika-logo-transparent.dim_200x200.png"
+                  alt="Strika Logo"
+                  className="w-8 h-8"
+                />
+                <span className="text-xl font-bold gradient-text">Strika</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Your premier cricket training facility
+              </p>
+            </div>
+            <div className="space-y-3">
+              <h3 className="font-semibold">Quick Links</h3>
+              <div className="flex flex-col gap-2 text-sm">
+                <button onClick={() => navigate({ to: '/booking' })} className="text-muted-foreground hover:text-foreground text-left">
+                  Book a Session
+                </button>
+                <button onClick={() => navigate({ to: '/membership' })} className="text-muted-foreground hover:text-foreground text-left">
+                  Membership
+                </button>
+                <button onClick={() => navigate({ to: '/venue' })} className="text-muted-foreground hover:text-foreground text-left">
+                  Venue Info
+                </button>
+              </div>
+            </div>
+            <div className="space-y-3">
+              <h3 className="font-semibold">Contact</h3>
+              <div className="text-sm text-muted-foreground space-y-1">
+                <p>Visit our venue page for contact details</p>
+              </div>
+            </div>
+          </div>
+          <div className="mt-8 pt-8 border-t text-center text-sm text-muted-foreground">
+            <p>
+              © 2026. Built with ❤️ using{' '}
               <a
                 href="https://caffeine.ai"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary hover:underline font-medium"
+                className="text-primary hover:underline"
               >
                 caffeine.ai
               </a>
-            </div>
-            <div className="flex gap-4 text-sm text-muted-foreground">
-              <button onClick={() => navigate({ to: '/venue' })} className="hover:text-foreground transition-colors">
-                Contact
-              </button>
-              <button onClick={() => navigate({ to: '/venue' })} className="hover:text-foreground transition-colors">
-                FAQs
-              </button>
-            </div>
+            </p>
           </div>
         </div>
       </footer>

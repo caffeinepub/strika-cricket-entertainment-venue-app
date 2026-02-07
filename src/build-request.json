@@ -1,0 +1,94 @@
+{
+  "kind": "build_request",
+  "title": "Fix admin-created time slots not appearing in Admin and Booking views",
+  "priority": "high",
+  "requirements": [
+    {
+      "id": "REQ-5",
+      "text": "Fix the time slot listing logic so that newly created time slots appear in the Admin \"Manage Time Slots\" list immediately after creation (even when they are not yet published/live).",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "recent-messages"
+        ],
+        "quotes": [
+          "The tabs are there like they are supposed to be, but the \"create time slot\" feature is not creating time slots as intended.",
+          "It says \"created time slots successfully\", but there are no time slots in either the admin view or on the main \"booking\" page."
+        ]
+      },
+      "acceptanceCriteria": [
+        "After clicking \"Create Slots\" in the Admin > Slots tab, the created slots appear in the Admin \"Manage Time Slots\" section without requiring a page refresh.",
+        "Admin \"Manage Time Slots\" displays slots regardless of their live/published status (so newly created hidden slots are visible to admins).",
+        "The Admin list clearly reflects each slot’s current Enabled/Disabled and Live/Hidden state using the existing toggle buttons."
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "Add an admin-only backend query to retrieve all time slots (including hidden/unpublished and disabled slots) and update the Admin Slots UI to use this query instead of the public \"available time slots\" query.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "recent-messages"
+        ],
+        "quotes": [
+          "They don't appear there."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend exposes an admin-gated method that returns all stored time slots (no filtering by isLive/isEnabled/time).",
+        "If a non-admin calls the new method, it is rejected (traps) as unauthorized, consistent with other admin-gated methods.",
+        "Frontend adds a React Query hook for the new method and AvailabilityManagementPanel uses it for the Admin list.",
+        "Creating/toggling a slot invalidates/refetches the admin list query so the UI stays in sync."
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "text": "Ensure the Booking page continues to show only bookable slots (live + enabled + in the future) and that admin slot creation only causes bookable slots to appear on Booking once an admin publishes them (sets Live).",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "recent-messages"
+        ],
+        "quotes": [
+          "The system should auto generate 30 minute slots."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Booking page continues to use the public availability query and does not show hidden/unpublished slots.",
+        "A newly created slot does not appear on Booking until the admin toggles it to Live.",
+        "Once a slot is toggled Live (and is Enabled and in the future), it appears on Booking without requiring a hard refresh (React Query invalidation works)."
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "text": "Update the Admin success messaging after slot creation to avoid implying slots are immediately visible to customers when they are created as hidden/unpublished by default.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "recent-messages"
+        ],
+        "quotes": [
+          "It says \"created time slots successfully\""
+        ]
+      },
+      "acceptanceCriteria": [
+        "After creating slots, the toast/message clarifies that slots were created and can be published (set Live) to appear on the Booking page.",
+        "No change to the slot creation behavior is required (slots may remain Hidden by default)."
+      ]
+    }
+  ],
+  "constraints": [
+    "Backend must remain a single Motoko actor in backend/main.mo (no additional backend services).",
+    "Do not edit files under frontend/src/components/ui or other frontend immutable paths listed in SYSTEM_CONTEXT; compose existing UI components instead.",
+    "Use English for all user-facing UI text."
+  ],
+  "nonGoals": [
+    "Do not add new booking rules, pricing, or capacity logic beyond fixing slot visibility/retrieval.",
+    "Do not implement a new database or external persistence layer.",
+    "Do not change Internet Identity authentication behavior."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

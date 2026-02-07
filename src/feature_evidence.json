@@ -1,0 +1,98 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-fix-the-time-slot-listing-logic-so-that-newly-created-time-slots-appear-in-the-admin-manage-time-slots-list-immediately-after-creation-even-when-they-are-not-yet-published-live",
+      "featureTitle": "Fix the time slot listing logic so that newly created time slots appear in the Admin \"Manage Time Slots\" list immediately after creation (even when they are not yet published/live).",
+      "files": [
+        "frontend/src/components/AvailabilityManagementPanel.tsx"
+      ],
+      "components": [
+        "authorization@1.0.1",
+        "blob-storage@2.0.3",
+        "stripe@1.0.1",
+        "http-outcalls@1.1.1",
+        "invite-links@1.0.1",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-5"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-an-admin-only-backend-query-to-retrieve-all-time-slots-including-hidden-unpublished-and-disabled-slots-and-update-the-admin-slots-ui-to-use-this-query-instead-of-the-public-available-time-slots-query",
+      "featureTitle": "Add an admin-only backend query to retrieve all time slots (including hidden/unpublished and disabled slots) and update the Admin Slots UI to use this query instead of the public \"available time slots\" query.",
+      "files": [
+        "frontend/src/components/AvailabilityManagementPanel.tsx",
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@1.0.1",
+        "blob-storage@2.0.3",
+        "stripe@1.0.1",
+        "http-outcalls@1.1.1",
+        "invite-links@1.0.1",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-6"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-ensure-the-booking-page-continues-to-show-only-bookable-slots-live-enabled-in-the-future-and-that-admin-slot-creation-only-causes-bookable-slots-to-appear-on-booking-once-an-admin-publishes-them-sets-live",
+      "featureTitle": "Ensure the Booking page continues to show only bookable slots (live + enabled + in the future) and that admin slot creation only causes bookable slots to appear on Booking once an admin publishes them (sets Live).",
+      "files": [
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@1.0.1",
+        "blob-storage@2.0.3",
+        "stripe@1.0.1",
+        "http-outcalls@1.1.1",
+        "invite-links@1.0.1",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-7"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-the-admin-success-messaging-after-slot-creation-to-avoid-implying-slots-are-immediately-visible-to-customers-when-they-are-created-as-hidden-unpublished-by-default",
+      "featureTitle": "Update the Admin success messaging after slot creation to avoid implying slots are immediately visible to customers when they are created as hidden/unpublished by default.",
+      "files": [
+        "frontend/src/components/AvailabilityManagementPanel.tsx"
+      ],
+      "components": [
+        "authorization@1.0.1",
+        "blob-storage@2.0.3",
+        "stripe@1.0.1",
+        "http-outcalls@1.1.1",
+        "invite-links@1.0.1",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-8"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

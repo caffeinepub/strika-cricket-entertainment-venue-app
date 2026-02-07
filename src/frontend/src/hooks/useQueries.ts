@@ -15,6 +15,8 @@ import type {
   Time,
   MembershipTier,
   PointsCategory,
+  TimeSlot,
+  BusinessContactInfo,
 } from '../backend';
 
 // User Profile Queries
@@ -288,11 +290,24 @@ export function useGetMyBookings() {
 export function useGetAvailableTimeSlots() {
   const { actor, isFetching } = useActor();
 
-  return useQuery<Time[]>({
+  return useQuery<TimeSlot[]>({
     queryKey: ['availableTimeSlots'],
     queryFn: async () => {
       if (!actor) return [];
       return actor.getAvailableTimeSlots();
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+export function useGetAllTimeSlots() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<TimeSlot[]>({
+    queryKey: ['allTimeSlots'],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getAllTimeSlots();
     },
     enabled: !!actor && !isFetching,
   });
@@ -313,6 +328,79 @@ export function useCreateBooking() {
       queryClient.invalidateQueries({ queryKey: ['myNotifications'] });
       queryClient.invalidateQueries({ queryKey: ['unreadNotificationCount'] });
       queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
+    },
+  });
+}
+
+// Time Slot Management (Admin)
+export function useCreateTimeSlot() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ startTime, duration }: { startTime: Time; duration: bigint }) => {
+      if (!actor) throw new Error('Actor not available');
+      await actor.createTimeSlot(startTime, duration);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['allTimeSlots'] });
+      queryClient.refetchQueries({ queryKey: ['allTimeSlots'] });
+    },
+  });
+}
+
+export function useToggleTimeSlotAvailability() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (startTime: Time) => {
+      if (!actor) throw new Error('Actor not available');
+      await actor.toggleTimeSlotAvailability(startTime);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['allTimeSlots'] });
+      queryClient.invalidateQueries({ queryKey: ['availableTimeSlots'] });
+      queryClient.refetchQueries({ queryKey: ['allTimeSlots'] });
+    },
+  });
+}
+
+export function useToggleTimeSlotLiveStatus() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (startTime: Time) => {
+      if (!actor) throw new Error('Actor not available');
+      await actor.toggleTimeSlotLiveStatus(startTime);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['allTimeSlots'] });
+      queryClient.invalidateQueries({ queryKey: ['availableTimeSlots'] });
+      queryClient.refetchQueries({ queryKey: ['allTimeSlots'] });
+    },
+  });
+}
+
+// Booking Extension (Admin)
+export function useExtendBooking15Minutes() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (bookingId: string) => {
+      if (!actor) throw new Error('Actor not available');
+      await actor.extendBooking15Minutes(bookingId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['myBookings'] });
+      queryClient.invalidateQueries({ queryKey: ['availableTimeSlots'] });
+      queryClient.invalidateQueries({ queryKey: ['allTimeSlots'] });
+    },
+    onError: (error: any) => {
+      console.error('Error extending booking:', error);
+      throw error;
     },
   });
 }
@@ -478,6 +566,35 @@ export function useUpdateVenueInfo() {
   });
 }
 
+// Business Contact Info Queries
+export function useGetBusinessContactInfo() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<BusinessContactInfo | null>({
+    queryKey: ['businessContactInfo'],
+    queryFn: async () => {
+      if (!actor) return null;
+      return actor.getBusinessContactInfo();
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+export function useUpdateBusinessContactInfo() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (info: BusinessContactInfo) => {
+      if (!actor) throw new Error('Actor not available');
+      await actor.updateBusinessContactInfo(info);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['businessContactInfo'] });
+    },
+  });
+}
+
 // Stripe Queries
 export function useIsStripeConfigured() {
   const { actor, isFetching } = useActor();
@@ -527,32 +644,8 @@ export function useCreateCheckoutSession() {
       return session;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
+      queryClient.invalidateQueries({ queryKey: ['myOrders'] });
     },
-  });
-}
-
-// Admin Queries
-export function useIsCallerAdmin() {
-  const { actor, isFetching } = useActor();
-
-  return useQuery<boolean>({
-    queryKey: ['isAdmin'],
-    queryFn: async () => {
-      if (!actor) return false;
-      try {
-        return await actor.isCallerAdmin();
-      } catch (error) {
-        console.error('Error checking admin status:', error);
-        return false;
-      }
-    },
-    enabled: !!actor && !isFetching,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
-    retry: 2,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
   });
 }
 
@@ -608,7 +701,6 @@ export function useGetMyNotifications() {
       return actor.getMyNotifications();
     },
     enabled: !!actor && !isFetching,
-    refetchInterval: 30000,
   });
 }
 
@@ -622,7 +714,6 @@ export function useGetUnreadNotificationCount() {
       return actor.getUnreadNotificationCount();
     },
     enabled: !!actor && !isFetching,
-    refetchInterval: 30000,
   });
 }
 
@@ -687,5 +778,19 @@ export function useDeleteAllNotifications() {
       queryClient.invalidateQueries({ queryKey: ['myNotifications'] });
       queryClient.invalidateQueries({ queryKey: ['unreadNotificationCount'] });
     },
+  });
+}
+
+// Admin Check
+export function useIsCallerAdmin() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<boolean>({
+    queryKey: ['isCallerAdmin'],
+    queryFn: async () => {
+      if (!actor) return false;
+      return actor.isCallerAdmin();
+    },
+    enabled: !!actor && !isFetching,
   });
 }

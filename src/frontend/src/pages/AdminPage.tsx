@@ -1,4 +1,4 @@
-import { Shield, Settings, Package, Info, UserPlus, Award, Zap, ToggleLeft } from 'lucide-react';
+import { Shield, Settings, Package, Info, UserPlus, Award, Zap, ToggleLeft, Calendar, Clock } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useIsCallerAdmin } from '../hooks/useQueries';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
@@ -10,6 +10,9 @@ import LoyaltyPointsSettingsPanel from '../components/LoyaltyPointsSettingsPanel
 import StripeConfigPanel from '../components/StripeConfigPanel';
 import ProductManagementPanel from '../components/ProductManagementPanel';
 import VenueInfoPanel from '../components/VenueInfoPanel';
+import AvailabilityManagementPanel from '../components/AvailabilityManagementPanel';
+import BookingExtensionsPanel from '../components/BookingExtensionsPanel';
+import BusinessContactInfoPanel from '../components/BusinessContactInfoPanel';
 
 export default function AdminPage() {
   const { identity } = useInternetIdentity();
@@ -47,7 +50,7 @@ export default function AdminPage() {
         </div>
 
         <Tabs defaultValue="membership" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-7">
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-9 gap-1">
             <TabsTrigger value="membership" className="gap-2">
               <Award className="w-4 h-4" />
               <span className="hidden sm:inline">Membership</span>
@@ -60,6 +63,14 @@ export default function AdminPage() {
             <TabsTrigger value="loyalty-settings" className="gap-2">
               <ToggleLeft className="w-4 h-4" />
               <span className="hidden sm:inline">Loyalty</span>
+            </TabsTrigger>
+            <TabsTrigger value="availability" className="gap-2">
+              <Calendar className="w-4 h-4" />
+              <span className="hidden sm:inline">Slots</span>
+            </TabsTrigger>
+            <TabsTrigger value="extensions" className="gap-2">
+              <Clock className="w-4 h-4" />
+              <span className="hidden sm:inline">Extend</span>
             </TabsTrigger>
             <TabsTrigger value="invite" className="gap-2">
               <UserPlus className="w-4 h-4" />
@@ -93,6 +104,14 @@ export default function AdminPage() {
             <LoyaltyPointsSettingsPanel />
           </TabsContent>
 
+          <TabsContent value="availability">
+            <AvailabilityManagementPanel />
+          </TabsContent>
+
+          <TabsContent value="extensions">
+            <BookingExtensionsPanel />
+          </TabsContent>
+
           <TabsContent value="invite">
             <InviteAdminPanel />
           </TabsContent>
@@ -106,7 +125,10 @@ export default function AdminPage() {
           </TabsContent>
 
           <TabsContent value="venue">
-            <VenueInfoPanel />
+            <div className="space-y-6">
+              <VenueInfoPanel />
+              <BusinessContactInfoPanel />
+            </div>
           </TabsContent>
         </Tabs>
       </div>

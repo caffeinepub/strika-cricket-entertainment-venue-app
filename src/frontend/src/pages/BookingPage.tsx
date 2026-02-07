@@ -127,16 +127,16 @@ export default function BookingPage() {
                 <div className="grid sm:grid-cols-2 gap-3">
                   {timeSlots.map((slot) => (
                     <button
-                      key={slot.toString()}
-                      onClick={() => setSelectedSlot(slot)}
+                      key={slot.startTime.toString()}
+                      onClick={() => setSelectedSlot(slot.startTime)}
                       className={`p-4 rounded-lg border-2 text-left transition-all ${
-                        selectedSlot?.toString() === slot.toString()
+                        selectedSlot?.toString() === slot.startTime.toString()
                           ? 'border-primary bg-primary/5'
                           : 'border-border hover:border-primary/50'
                       }`}
                     >
-                      <div className="font-medium">{formatTime(slot)}</div>
-                      <div className="text-sm text-muted-foreground mt-1">1 hour session</div>
+                      <div className="font-medium">{formatTime(slot.startTime)}</div>
+                      <div className="text-sm text-muted-foreground mt-1">30 minute session</div>
                     </button>
                   ))}
                 </div>
@@ -159,7 +159,7 @@ export default function BookingPage() {
                     </div>
                     <div className="space-y-2">
                       <div className="text-sm text-muted-foreground">Duration</div>
-                      <div className="font-medium">1 hour</div>
+                      <div className="font-medium">30 minutes</div>
                     </div>
                     
                     {/* Points Preview */}

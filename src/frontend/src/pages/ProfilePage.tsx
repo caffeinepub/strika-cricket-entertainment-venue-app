@@ -111,6 +111,9 @@ export default function ProfilePage() {
                       >
                         <div className="space-y-1">
                           <div className="font-medium">{formatTime(booking.timeSlot)}</div>
+                          <div className="text-sm text-muted-foreground">
+                            Duration: 30 minutes
+                          </div>
                           <div className="text-sm text-muted-foreground">Booking ID: {booking.id}</div>
                         </div>
                         <Badge variant={booking.status === 'confirmed' ? 'default' : 'secondary'}>
