@@ -344,6 +344,7 @@ export function useCreateTimeSlot() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['allTimeSlots'] });
+      queryClient.invalidateQueries({ queryKey: ['availableTimeSlots'] });
       queryClient.refetchQueries({ queryKey: ['allTimeSlots'] });
     },
   });
@@ -379,6 +380,27 @@ export function useToggleTimeSlotLiveStatus() {
       queryClient.invalidateQueries({ queryKey: ['allTimeSlots'] });
       queryClient.invalidateQueries({ queryKey: ['availableTimeSlots'] });
       queryClient.refetchQueries({ queryKey: ['allTimeSlots'] });
+    },
+  });
+}
+
+export function useBulkSetTimeSlotStates() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (states: Array<[Time, boolean, boolean]>) => {
+      if (!actor) throw new Error('Actor not available');
+      await actor.bulkSetTimeSlotStates(states);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['allTimeSlots'] });
+      queryClient.invalidateQueries({ queryKey: ['availableTimeSlots'] });
+      queryClient.refetchQueries({ queryKey: ['allTimeSlots'] });
+    },
+    onError: (error: any) => {
+      console.error('Error bulk updating time slot states:', error);
+      throw error;
     },
   });
 }
@@ -701,6 +723,7 @@ export function useGetMyNotifications() {
       return actor.getMyNotifications();
     },
     enabled: !!actor && !isFetching,
+    refetchInterval: 30000,
   });
 }
 
@@ -714,6 +737,7 @@ export function useGetUnreadNotificationCount() {
       return actor.getUnreadNotificationCount();
     },
     enabled: !!actor && !isFetching,
+    refetchInterval: 30000,
   });
 }
 
@@ -781,7 +805,7 @@ export function useDeleteAllNotifications() {
   });
 }
 
-// Admin Check
+// Admin Authorization Check
 export function useIsCallerAdmin() {
   const { actor, isFetching } = useActor();
 

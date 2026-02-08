@@ -1,29 +1,25 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-07T22:15:42.695Z",
+  "generatedAt": "2026-02-08T01:10:38.793Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 4,
-    "implemented": 4,
+    "total": 3,
+    "implemented": 1,
     "items": [
       {
-        "id": "REQ-5",
-        "summary": "Fix the time slot listing logic so that newly created time slots appear in the Admin \"Manage Time Slots\" list immediately after creation (even when they are not yet published/live).",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/AvailabilityManagementPanel.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/AvailabilityManagementPanel.tsx"
-        ]
+        "id": "REQ-10",
+        "summary": "Add an admin-only backend operation to bulk set (not toggle) the Live/Hidden and Enabled/Disabled states for all time slots currently visible in the Admin “Manage Time Slots” list, so the UI can apply a single bulk action reliably.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
       },
       {
-        "id": "REQ-6",
-        "summary": "Add an admin-only backend query to retrieve all time slots (including hidden/unpublished and disabled slots) and update the Admin Slots UI to use this query instead of the public \"available time slots\" query.",
+        "id": "REQ-11",
+        "summary": "Update the Admin Slots UI to (1) remove instructions that imply newly created slots are hidden by default, and (2) add bulk actions that apply to all slots currently visible in the Admin “Manage Time Slots” list to set both visibility (Live/Hidden) and availability (Enabled/Disabled) in one click.",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/hooks/useQueries.ts",
@@ -35,32 +31,17 @@
         ]
       },
       {
-        "id": "REQ-7",
-        "summary": "Ensure the Booking page continues to show only bookable slots (live + enabled + in the future) and that admin slot creation only causes bookable slots to appear on Booking once an admin publishes them (sets Live).",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/BookingPage.tsx",
-          "frontend/src/hooks/useQueries.ts"
-        ],
-        "matchedFiles": [
-          "frontend/src/hooks/useQueries.ts"
-        ]
-      },
-      {
-        "id": "REQ-8",
-        "summary": "Update the Admin success messaging after slot creation to avoid implying slots are immediately visible to customers when they are created as hidden/unpublished by default.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/AvailabilityManagementPanel.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/AvailabilityManagementPanel.tsx"
-        ]
+        "id": "REQ-9",
+        "summary": "Change backend time slot create/update behavior so that newly created time slots and any time slot updated via the admin update operation are automatically published (not hidden) by default.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
       }
     ]
   },
   "changedFiles": [
     "backend/main.mo",
+    "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",

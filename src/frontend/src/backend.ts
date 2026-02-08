@@ -272,6 +272,7 @@ export interface backendInterface {
     addProduct(product: Product): Promise<void>;
     addReview(rating: bigint, comment: string): Promise<string>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
+    bulkSetTimeSlotStates(states: Array<[Time, boolean, boolean]>): Promise<void>;
     createAdminInvitation(email: string, phone: string, whatsapp: string, telegram: string, slack: string): Promise<string>;
     createAnnouncement(message: string): Promise<void>;
     createBooking(timeSlot: Time): Promise<string>;
@@ -477,6 +478,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.assignCallerUserRole(arg0, to_candid_UserRole_n9(this._uploadFile, this._downloadFile, arg1));
+            return result;
+        }
+    }
+    async bulkSetTimeSlotStates(arg0: Array<[Time, boolean, boolean]>): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.bulkSetTimeSlotStates(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.bulkSetTimeSlotStates(arg0);
             return result;
         }
     }

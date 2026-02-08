@@ -180,6 +180,7 @@ export interface backendInterface {
     addProduct(product: Product): Promise<void>;
     addReview(rating: bigint, comment: string): Promise<string>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
+    bulkSetTimeSlotStates(states: Array<[Time, boolean, boolean]>): Promise<void>;
     createAdminInvitation(email: string, phone: string, whatsapp: string, telegram: string, slack: string): Promise<string>;
     createAnnouncement(message: string): Promise<void>;
     createBooking(timeSlot: Time): Promise<string>;

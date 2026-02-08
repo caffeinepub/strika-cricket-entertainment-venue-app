@@ -190,6 +190,10 @@ export interface _SERVICE {
   'addProduct' : ActorMethod<[Product], undefined>,
   'addReview' : ActorMethod<[bigint, string], string>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
+  'bulkSetTimeSlotStates' : ActorMethod<
+    [Array<[Time, boolean, boolean]>],
+    undefined
+  >,
   'createAdminInvitation' : ActorMethod<
     [string, string, string, string, string],
     string

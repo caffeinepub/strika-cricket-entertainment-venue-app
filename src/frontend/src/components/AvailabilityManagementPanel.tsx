@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Calendar, Clock, Plus, ToggleLeft, ToggleRight, Eye, EyeOff } from 'lucide-react';
+import { Calendar, Clock, Plus, ToggleLeft, ToggleRight, Eye, EyeOff, CheckCircle, XCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { useGetAllTimeSlots, useCreateTimeSlot, useToggleTimeSlotAvailability, useToggleTimeSlotLiveStatus } from '../hooks/useQueries';
+import { useGetAllTimeSlots, useCreateTimeSlot, useToggleTimeSlotAvailability, useToggleTimeSlotLiveStatus, useBulkSetTimeSlotStates } from '../hooks/useQueries';
 import { toast } from 'sonner';
 import type { Time } from '../backend';
 
@@ -13,6 +13,7 @@ export default function AvailabilityManagementPanel() {
   const createTimeSlot = useCreateTimeSlot();
   const toggleAvailability = useToggleTimeSlotAvailability();
   const toggleLiveStatus = useToggleTimeSlotLiveStatus();
+  const bulkSetStates = useBulkSetTimeSlotStates();
 
   const [selectedDate, setSelectedDate] = useState('');
   const [startTime, setStartTime] = useState('');
@@ -57,7 +58,7 @@ export default function AvailabilityManagementPanel() {
         await createTimeSlot.mutateAsync({ startTime: slot, duration: BigInt(30) });
       }
 
-      toast.success(`Created ${slots.length} time slots successfully! Set them to "Live" to publish on the Booking page.`);
+      toast.success(`Created ${slots.length} time slots successfully!`);
       setSelectedDate('');
       setStartTime('');
       setEndTime('');
@@ -83,6 +84,32 @@ export default function AvailabilityManagementPanel() {
       toast.success('Slot live status updated');
     } catch (error: any) {
       toast.error(error.message || 'Failed to toggle live status');
+      console.error(error);
+    }
+  };
+
+  const handleBulkSetStates = async (isEnabled: boolean, isLive: boolean) => {
+    if (sortedSlots.length === 0) {
+      toast.error('No slots available to update');
+      return;
+    }
+
+    try {
+      const states: Array<[Time, boolean, boolean]> = sortedSlots.map((slot) => [
+        slot.startTime,
+        isEnabled,
+        isLive,
+      ]);
+
+      await bulkSetStates.mutateAsync(states);
+      
+      const statusText = isEnabled && isLive ? 'enabled and live' : 
+                        !isEnabled && !isLive ? 'disabled and hidden' :
+                        isEnabled ? 'enabled' : 'disabled';
+      
+      toast.success(`All ${sortedSlots.length} visible slots set to ${statusText}`);
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to bulk update slots');
       console.error(error);
     }
   };
@@ -158,6 +185,57 @@ export default function AvailabilityManagementPanel() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {sortedSlots.length > 0 && (
+            <div className="mb-6 p-4 rounded-lg border bg-muted/20">
+              <h3 className="text-sm font-semibold mb-3">Bulk Actions for All Visible Slots</h3>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={() => handleBulkSetStates(true, true)}
+                  disabled={bulkSetStates.isPending}
+                  className="gap-2"
+                >
+                  <CheckCircle className="w-4 h-4" />
+                  Enable & Publish All
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleBulkSetStates(false, false)}
+                  disabled={bulkSetStates.isPending}
+                  className="gap-2"
+                >
+                  <XCircle className="w-4 h-4" />
+                  Disable & Hide All
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleBulkSetStates(true, false)}
+                  disabled={bulkSetStates.isPending}
+                  className="gap-2"
+                >
+                  <ToggleRight className="w-4 h-4" />
+                  Enable All (Keep Hidden)
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleBulkSetStates(false, true)}
+                  disabled={bulkSetStates.isPending}
+                  className="gap-2"
+                >
+                  <Eye className="w-4 h-4" />
+                  Publish All (Keep Disabled)
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                Applies to all {sortedSlots.length} slot{sortedSlots.length !== 1 ? 's' : ''} currently displayed below
+              </p>
+            </div>
+          )}
+
           {isLoading ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground">Loading time slots...</p>

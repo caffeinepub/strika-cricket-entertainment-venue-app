@@ -1,17 +1,19 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 5,
-  "summary": "Website/app with booking and shop features; extend existing Admin tab to manage booking availability, session extensions, and business/contact settings.",
+  "projectStateVersion": 7,
+  "summary": "Website/app with booking and shop features; extend existing Admin tab to manage booking availability, session extensions, and business/contact settings, plus auto-publish time slots on create/update and provide bulk hide/unhide + enable/disable for slots visible in the Admin list.",
   "architectural_notes": [
     "Use the existing Admin tab (authenticated admin area) as the management UI for booking slots and business/contact settings.",
     "Booking availability is managed by manually toggling individual time slots; only 'live' slots are bookable by customers.",
     "15-minute add-on extensions are staff-only actions performed during an active session and should be allowed only when the subsequent slot is unbooked.",
-    "Time slot creation should auto-generate 30-minute slots and persist them so they appear in both Admin and public Booking views."
+    "Time slot creation should auto-generate 30-minute slots and persist them so they appear in both Admin and public Booking views.",
+    "Admin slot create/update should auto-publish slots (set Live/Unhidden) per the chosen workflow.",
+    "Provide an Admin bulk toggle/action that applies to all slots currently visible in the Admin list and updates both Live/Hidden and Enabled/Disabled state."
   ],
   "known_issues": [
     "BUG: 'Create time slot' shows success message but no time slots appear in Admin Manage Time Slots or on the main Booking page (slots seemingly not persisted and/or not retrieved for display)."
   ],
-  "isFixRequest": true,
+  "isFixRequest": false,
   "existing_features": [
     {
       "id": "feature-replace-the-placeholder-booking-availability-logic-with-a-persisted-admin-managed-time-slot-availability-system-that-supports-manually-toggling-individual-30-minute-slots-as-available-unavailable-and-publishing-those-slots-as-live-so-customers-can-book-them",
@@ -76,6 +78,14 @@
         "REQ-8"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-update-the-admin-slots-ui-to-1-remove-instructions-that-imply-newly-created-slots-are-hidden-by-default-and-2-add-bulk-actions-that-apply-to-all-slots-currently-visible-in-the-admin-manage-time-slots-list-to-set-both-visibility-live-hidden-and-availability-enabled-disabled-in-one-click",
+      "title": "Update the Admin Slots UI to (1) remove instructions that imply newly created slots are hidden by default, and (2) add bulk actions that apply to all slots currently visible in the Admin “Manage Time Slots” list to set both visibility (Live/Hidden) and availability (Enabled/Disabled) in one click.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -95,6 +105,34 @@
       "id": "AR-3",
       "summary": "Admin tab: editable business/contact info via simple text fields (e.g., phone, email, address, description) and other business settings as requested",
       "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Auto-publish time slots (set Live/Unhidden) for both newly created slots and any slots when updated in Admin",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Admin bulk action to hide/unhide AND enable/disable all time slots currently visible in the Admin list",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Change backend time slot create/update behavior so that newly created time slots and any time slot updated via the admin update operation are automatically published (not hidden) by default.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Add an admin-only backend operation to bulk set (not toggle) the Live/Hidden and Enabled/Disabled states for all time slots currently visible in the Admin “Manage Time Slots” list, so the UI can apply a single bulk action reliably.",
+      "reqIds": [
+        "REQ-10"
+      ],
       "status": "pending"
     }
   ],

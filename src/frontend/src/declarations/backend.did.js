@@ -208,6 +208,11 @@ export const idlService = IDL.Service({
   'addProduct' : IDL.Func([Product], [], []),
   'addReview' : IDL.Func([IDL.Nat, IDL.Text], [IDL.Text], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+  'bulkSetTimeSlotStates' : IDL.Func(
+      [IDL.Vec(IDL.Tuple(Time, IDL.Bool, IDL.Bool))],
+      [],
+      [],
+    ),
   'createAdminInvitation' : IDL.Func(
       [IDL.Text, IDL.Text, IDL.Text, IDL.Text, IDL.Text],
       [IDL.Text],
@@ -502,6 +507,11 @@ export const idlFactory = ({ IDL }) => {
     'addProduct' : IDL.Func([Product], [], []),
     'addReview' : IDL.Func([IDL.Nat, IDL.Text], [IDL.Text], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+    'bulkSetTimeSlotStates' : IDL.Func(
+        [IDL.Vec(IDL.Tuple(Time, IDL.Bool, IDL.Bool))],
+        [],
+        [],
+      ),
     'createAdminInvitation' : IDL.Func(
         [IDL.Text, IDL.Text, IDL.Text, IDL.Text, IDL.Text],
         [IDL.Text],

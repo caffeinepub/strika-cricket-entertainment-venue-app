@@ -13,7 +13,9 @@ import Nat "mo:base/Nat";
 import Int "mo:base/Int";
 import InviteLinksModule "invite-links/invite-links-module";
 import Random "mo:base/Random";
+import Migration "migration";
 
+(with migration = Migration.run)
 actor Strika {
     // Authorization
     let accessControlState = AccessControl.initState();
@@ -225,7 +227,7 @@ actor Strika {
             startTime;
             duration;
             isEnabled = true;
-            isLive = false;
+            isLive = true;
         };
 
         timeSlots := textMap.put(timeSlots, Nat.toText(Int.abs(startTime)), timeSlot);
@@ -240,12 +242,36 @@ actor Strika {
             startTime;
             duration;
             isEnabled = true;
-            isLive = false;
+            isLive = true;
         };
 
         timeSlots := textMap.put(timeSlots, Nat.toText(Int.abs(startTime)), timeSlot);
     };
 
+    // New function to bulk set time slot states
+    public shared ({ caller }) func bulkSetTimeSlotStates(states : [(Time.Time, Bool, Bool)]) : async () {
+        if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+            Debug.trap("Unauthorized: Only admins can perform bulk updates");
+        };
+
+        for ((startTime, isEnabled, isLive) in states.vals()) {
+            switch (textMap.get(timeSlots, Nat.toText(Int.abs(startTime)))) {
+                case null {
+                    Debug.trap("Time slot not found: " # Nat.toText(Int.abs(startTime)));
+                };
+                case (?timeSlot) {
+                    let updatedTimeSlot = {
+                        timeSlot with
+                        isEnabled;
+                        isLive;
+                    };
+                    timeSlots := textMap.put(timeSlots, Nat.toText(Int.abs(startTime)), updatedTimeSlot);
+                };
+            };
+        };
+    };
+
+    // Deprecated toggle functions (should not be used anymore)
     public shared ({ caller }) func toggleTimeSlotAvailability(startTime : Time.Time) : async () {
         if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
             Debug.trap("Unauthorized: Only admins can toggle time slot availability");

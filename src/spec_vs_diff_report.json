@@ -1,48 +1,41 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-07T22:15:42.693Z",
-  "summary": "Frontend changes clearly switch the Admin Slots panel to use an all-slots query hook and update the post-create success message to clarify publishing (Live) is required for Booking visibility. However, the diff summary does not provide concrete evidence that the backend admin-gated “get all time slots” method exists and traps for non-admins, nor does it show the React Query invalidation/refetch behavior required to keep Admin and Booking views in sync after create/toggle operations.",
+  "generatedAt": "2026-02-08T01:10:38.790Z",
+  "summary": "Frontend adds bulk set UI for visible admin time slots and a new React Query hook reference for bulk state updates; backend introduces a migration framework/file, but the diff summary does not provide clear evidence that the required backend time-slot auto-publish defaults or the specific admin bulk-set API (with required signature and admin gating) are implemented.",
   "missing_requirements": [
     {
-      "id": "REQ-6",
-      "requirement": "Backend exposes an admin-gated method that returns all stored time slots (no filtering by isLive/isEnabled/time), and rejects non-admin callers (traps) as unauthorized.",
-      "reason": "The backend diff content shown is truncated and does not include any time-slot related methods; there is no visible evidence of a new admin-only query for all time slots or an explicit unauthorized trap for non-admins.",
+      "id": "REQ-9",
+      "requirement": "Change backend time slot create/update behavior so newly created time slots and any time slot updated via the admin update operation are automatically published (isLive=true) by default, and create defaults to isEnabled=true without force-enabling previously disabled slots on update.",
+      "reason": "The provided backend/main.mo diff snippet is truncated before any time-slot create/update logic; there is no visible evidence in the diff summary showing createTimeSlot/updateTimeSlot now set isLive=true by default or preserve isEnabled on update.",
       "evidence": [
         "backend/main.mo (truncated)"
       ]
     },
     {
-      "id": "REQ-6",
-      "requirement": "Creating/toggling a slot invalidates/refetches the admin list query so the UI stays in sync.",
-      "reason": "AvailabilityManagementPanel calls mutations but the shown code does not demonstrate query invalidation/refetch for the admin all-slots query after create/toggle. The hook implementation that might do this is truncated and not visible.",
+      "id": "REQ-10",
+      "requirement": "Add an admin-only backend operation to bulk set (not toggle) isLive and isEnabled for a provided set of visible slot identifiers (start times) using two target booleans, rejecting non-admin callers.",
+      "reason": "Frontend shows a bulk mutation hook being used, but the backend method itself (including admin gating/authorization error behavior and the specified inputs of [startTimes] + (isLive,isEnabled)) is not evidenced in the truncated backend/main.mo diff. The frontend constructs an array of per-slot tuples [startTime,isEnabled,isLive], which does not match the requested API shape (startTimes + two booleans).",
       "evidence": [
-        "frontend/src/components/AvailabilityManagementPanel.tsx (truncated)",
-        "frontend/src/hooks/useQueries.ts (truncated)"
-      ]
-    },
-    {
-      "id": "REQ-7",
-      "requirement": "Once a slot is toggled Live (and is Enabled and in the future), it appears on Booking without requiring a hard refresh (React Query invalidation works).",
-      "reason": "No Booking page code is shown in the diff, and the mutations shown in AvailabilityManagementPanel do not visibly invalidate/refetch the public availability query used by Booking.",
-      "evidence": [
-        "frontend/src/components/AvailabilityManagementPanel.tsx (truncated)",
-        "frontend/src/hooks/useQueries.ts (truncated)"
+        "backend/main.mo (truncated)",
+        "frontend/src/components/AvailabilityManagementPanel.tsx"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Membership tier CRUD functionality (create/update/delete membership tiers with admin authorization checks).",
-      "reason": "Not requested by REQ-5 through REQ-8, which are focused specifically on time slot visibility/retrieval and related admin/booking UI behavior.",
+      "description": "Introduced a backend state migration module/framework (backend/migration.mo) and wired it into backend/main.mo.",
+      "reason": "The BuildRequest explicitly prefers no migration for behavior-only changes and says to generate backend/migration.mo only if strictly required. The diff adds backend/migration.mo and imports/uses it in backend/main.mo, but the diff summary does not show any required state shape change that would necessitate migration for the requested features.",
       "evidence": [
-        "backend/main.mo (truncated)"
+        "backend/migration.mo",
+        "backend/main.mo"
       ]
     }
   ],
   "confidence": 0.62,
   "changed_files": [
     "backend/main.mo",
+    "backend/migration.mo",
     "frontend-file-summaries.txt",
     "frontend/src/components/AvailabilityManagementPanel.tsx",
     "frontend/src/hooks/useQueries.ts",
