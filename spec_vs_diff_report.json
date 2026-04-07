@@ -1,0 +1,44 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-08T01:10:38.790Z",
+  "summary": "Frontend adds bulk set UI for visible admin time slots and a new React Query hook reference for bulk state updates; backend introduces a migration framework/file, but the diff summary does not provide clear evidence that the required backend time-slot auto-publish defaults or the specific admin bulk-set API (with required signature and admin gating) are implemented.",
+  "missing_requirements": [
+    {
+      "id": "REQ-9",
+      "requirement": "Change backend time slot create/update behavior so newly created time slots and any time slot updated via the admin update operation are automatically published (isLive=true) by default, and create defaults to isEnabled=true without force-enabling previously disabled slots on update.",
+      "reason": "The provided backend/main.mo diff snippet is truncated before any time-slot create/update logic; there is no visible evidence in the diff summary showing createTimeSlot/updateTimeSlot now set isLive=true by default or preserve isEnabled on update.",
+      "evidence": [
+        "backend/main.mo (truncated)"
+      ]
+    },
+    {
+      "id": "REQ-10",
+      "requirement": "Add an admin-only backend operation to bulk set (not toggle) isLive and isEnabled for a provided set of visible slot identifiers (start times) using two target booleans, rejecting non-admin callers.",
+      "reason": "Frontend shows a bulk mutation hook being used, but the backend method itself (including admin gating/authorization error behavior and the specified inputs of [startTimes] + (isLive,isEnabled)) is not evidenced in the truncated backend/main.mo diff. The frontend constructs an array of per-slot tuples [startTime,isEnabled,isLive], which does not match the requested API shape (startTimes + two booleans).",
+      "evidence": [
+        "backend/main.mo (truncated)",
+        "frontend/src/components/AvailabilityManagementPanel.tsx"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "Introduced a backend state migration module/framework (backend/migration.mo) and wired it into backend/main.mo.",
+      "reason": "The BuildRequest explicitly prefers no migration for behavior-only changes and says to generate backend/migration.mo only if strictly required. The diff adds backend/migration.mo and imports/uses it in backend/main.mo, but the diff summary does not show any required state shape change that would necessitate migration for the requested features.",
+      "evidence": [
+        "backend/migration.mo",
+        "backend/main.mo"
+      ]
+    }
+  ],
+  "confidence": 0.62,
+  "changed_files": [
+    "backend/main.mo",
+    "backend/migration.mo",
+    "frontend-file-summaries.txt",
+    "frontend/src/components/AvailabilityManagementPanel.tsx",
+    "frontend/src/hooks/useQueries.ts",
+    "project_state.json"
+  ]
+}

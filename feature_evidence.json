@@ -1,0 +1,29 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-update-the-admin-slots-ui-to-1-remove-instructions-that-imply-newly-created-slots-are-hidden-by-default-and-2-add-bulk-actions-that-apply-to-all-slots-currently-visible-in-the-admin-manage-time-slots-list-to-set-both-visibility-live-hidden-and-availability-enabled-disabled-in-one-click",
+      "featureTitle": "Update the Admin Slots UI to (1) remove instructions that imply newly created slots are hidden by default, and (2) add bulk actions that apply to all slots currently visible in the Admin “Manage Time Slots” list to set both visibility (Live/Hidden) and availability (Enabled/Disabled) in one click.",
+      "files": [
+        "frontend/src/components/AvailabilityManagementPanel.tsx",
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@1.0.1",
+        "blob-storage@2.0.3",
+        "stripe@1.0.1",
+        "http-outcalls@1.1.1",
+        "invite-links@1.0.1",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-11"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

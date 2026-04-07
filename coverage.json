@@ -1,0 +1,60 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-08T01:10:38.793Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 3,
+    "implemented": 1,
+    "items": [
+      {
+        "id": "REQ-10",
+        "summary": "Add an admin-only backend operation to bulk set (not toggle) the Live/Hidden and Enabled/Disabled states for all time slots currently visible in the Admin “Manage Time Slots” list, so the UI can apply a single bulk action reliably.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-11",
+        "summary": "Update the Admin Slots UI to (1) remove instructions that imply newly created slots are hidden by default, and (2) add bulk actions that apply to all slots currently visible in the Admin “Manage Time Slots” list to set both visibility (Live/Hidden) and availability (Enabled/Disabled) in one click.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/AvailabilityManagementPanel.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/AvailabilityManagementPanel.tsx"
+        ]
+      },
+      {
+        "id": "REQ-9",
+        "summary": "Change backend time slot create/update behavior so that newly created time slots and any time slot updated via the admin update operation are automatically published (not hidden) by default.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/main.mo",
+    "backend/migration.mo",
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/AvailabilityManagementPanel.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useQueries.ts",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

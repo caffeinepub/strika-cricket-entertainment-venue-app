@@ -1,0 +1,30 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Admin time slot bulk state controls and updated publish messaging",
+  "requirements": [
+    {
+      "id": "REQ-11",
+      "summary": "Update Admin “Manage Time Slots” UI messaging and add bulk set actions for Live/Hidden and Enabled/Disabled for the currently visible slot list, with proper React Query cache invalidation.",
+      "acceptanceCriteria": [
+        "After creating slots in AvailabilityManagementPanel, the success toast no longer instructs the admin to manually set slots to Live for them to appear on the Booking page.",
+        "AvailabilityManagementPanel displays bulk action controls that apply to the currently rendered/visible slots in the list (the same set shown on screen).",
+        "Executing the bulk action results in all visible slots being updated to the requested states (both isLive and isEnabled) and the list refreshes to reflect the new states.",
+        "React Query caches for ['allTimeSlots'] and ['availableTimeSlots'] are invalidated/refetched after bulk changes so the Admin list and Booking page reflect updates without a manual refresh.",
+        "No changes are made to immutable frontend paths (authentication/actor hooks and shared UI library sources)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add a React Query mutation hook for the existing backend bulkSetTimeSlotStates capability; accept an array of visible slot startTimes plus target isLive/isEnabled values, and on success invalidate/refetch ['allTimeSlots'] and invalidate ['availableTimeSlots'] to keep Admin + Booking views consistent. Do not modify any immutable auth/actor hooks."
+        },
+        {
+          "path": "frontend/src/components/AvailabilityManagementPanel.tsx",
+          "operation": "modify",
+          "description": "Update the create-slots success toast to remove the instruction about manually setting slots to Live. Add admin bulk action controls within the Manage Time Slots card that operate on the currently rendered/visible slot list (the same array mapped for display) and call the new bulk-set mutation to set both visibility (isLive) and availability (isEnabled) in a single click; show loading/disabled states during the bulk update and refresh the list via query invalidation."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "kind": "build_request",
+  "title": "Auto-publish time slots on create/update and add admin bulk hide/unhide + enable/disable for visible slots",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-9",
+      "text": "Change backend time slot create/update behavior so that newly created time slots and any time slot updated via the admin update operation are automatically published (not hidden) by default.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-user-yes-build-this"
+        ],
+        "quotes": [
+          "Yes, lets auto publish updated time slots.",
+          "1. C"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Calling createTimeSlot(startTime, duration) results in a stored TimeSlot where isLive=true and isEnabled=true by default (unless otherwise specified by a separate admin action).",
+        "Calling updateTimeSlot(startTime, duration) results in a stored TimeSlot where isLive=true after the update.",
+        "updateTimeSlot does not unintentionally reset an existing slot’s isEnabled=false back to true unless that is explicitly intended by the update operation (i.e., do not force-enable disabled slots as a side effect of updating duration).",
+        "Slots that are auto-published (isLive=true) and enabled (isEnabled=true) and in the future appear on the Booking page via the existing getAvailableTimeSlots query."
+      ]
+    },
+    {
+      "id": "REQ-10",
+      "text": "Add an admin-only backend operation to bulk set (not toggle) the Live/Hidden and Enabled/Disabled states for all time slots currently visible in the Admin “Manage Time Slots” list, so the UI can apply a single bulk action reliably.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-user-yes-build-this"
+        ],
+        "quotes": [
+          "Also, maybe we can add a toggle feature to \"hide\" or \"unhide\" all?",
+          "2. A",
+          "3.Both"
+        ]
+      },
+      "acceptanceCriteria": [
+        "A new admin-gated backend method exists that accepts the set of visible slot identifiers (start times) and two target booleans (isLive, isEnabled), and applies those exact states to each referenced slot.",
+        "The bulk operation is atomic from the UI perspective (one call from the frontend) and does not require iterating N per-slot toggle calls.",
+        "Non-admin callers are rejected for the bulk operation with an authorization error."
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "text": "Update the Admin Slots UI to (1) remove instructions that imply newly created slots are hidden by default, and (2) add bulk actions that apply to all slots currently visible in the Admin “Manage Time Slots” list to set both visibility (Live/Hidden) and availability (Enabled/Disabled) in one click.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-user-yes-build-this"
+        ],
+        "quotes": [
+          "2. A",
+          "3.Both",
+          "Build this."
+        ]
+      },
+      "acceptanceCriteria": [
+        "After creating slots in AvailabilityManagementPanel, the success toast no longer instructs the admin to manually set slots to Live for them to appear on the Booking page.",
+        "AvailabilityManagementPanel displays bulk action controls that apply to the currently rendered/visible slots in the list (the same set shown on screen).",
+        "Executing the bulk action results in all visible slots being updated to the requested states (both isLive and isEnabled) and the list refreshes to reflect the new states.",
+        "React Query caches for ['allTimeSlots'] and ['availableTimeSlots'] are invalidated/refetched after bulk changes so the Admin list and Booking page reflect updates without a manual refresh.",
+        "No changes are made to immutable frontend paths (authentication/actor hooks and shared UI library sources)."
+      ]
+    }
+  ],
+  "constraints": [
+    "Backend must remain a single Motoko actor in backend/main.mo (no additional backend services).",
+    "Only generate backend/migration.mo if a state migration is strictly required; prefer no migration for behavior-only changes.",
+    "Do not edit frontend immutable paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui/*.",
+    "Use English for all user-facing text."
+  ],
+  "nonGoals": [
+    "Do not change the Booking page eligibility rules beyond the existing intent (Booking page should still show only slots that are live + enabled + in the future).",
+    "Do not add new booking filters (e.g., date filtering) unless explicitly requested.",
+    "Do not implement third-party integrations or external databases."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
+  }
+}
